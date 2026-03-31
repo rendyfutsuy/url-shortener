@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/rendyfutsuy/base-go/utils"
 )
 
 type PostShortUrl struct {
@@ -19,6 +20,6 @@ func (PostShortUrl) TableName() string {
 }
 
 func (PostShortUrl PostShortUrl) GetShortedURL() string {
-	baseURL := "https://shorturl.com/"
+	baseURL := utils.ConfigVars.String("app_url") + ":" + utils.ConfigVars.String("app_port") + "/v1/post/url-shortener/"
 	return baseURL + PostShortUrl.Code
 }
