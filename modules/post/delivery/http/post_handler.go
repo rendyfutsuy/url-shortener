@@ -29,6 +29,11 @@ func NewPostHandler(e *echo.Echo, uc post.Usecase, mwP _reqContext.IMiddlewarePa
 	// Public routes
 	e.GET("/v1/post", h.GetIndex, h.mwPageRequest.PageRequestCtx)
 	e.GET("/v1/post/:id", h.GetByID)
+	e.GET("/v1/post/url-shotener", h.GetByID)
+
+	// url shortener
+	e.POST("/v1/post/url-shortener", h.UrlShortener)
+	e.GET("/v1/post/url-shortener/:code", h.GetUrlShortener)
 
 	// Protected routes
 	r := e.Group("/v1/post")
@@ -247,5 +252,37 @@ func (h *PostHandler) GetByID(c echo.Context) error {
 	out.Topics = topics
 	resp := response.NonPaginationResponse{}
 	resp, _ = resp.SetResponse(out)
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (h *PostHandler) UrlShortener(c echo.Context) error {
+	// ctx := c.Request().Context()
+
+	req := new(dto.ReqUrlShortener)
+	if err := c.Bind(req); err != nil {
+		return c.JSON(http.StatusBadRequest, response.SetErrorResponse(http.StatusBadRequest, err.Error()))
+	}
+	if err := c.Validate(req); err != nil {
+		return c.JSON(http.StatusBadRequest, response.SetErrorResponse(http.StatusBadRequest, err.Error()))
+	}
+
+	// adjust url
+	shortenendURL := dto.ToUrlShortener(nil)
+
+	resp := response.NonPaginationResponse{}
+	resp, _ = resp.SetResponse(shortenendURL)
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (h *PostHandler) GetUrlShortener(c echo.Context) error {
+	// ctx := c.Request().Context()
+	// code := c.Param("code")
+
+	// fetch full url
+
+	// adjust url
+	shortenendURL := dto.ToUrlShortener(nil)
+	resp := response.NonPaginationResponse{}
+	resp, _ = resp.SetResponse(shortenendURL)
 	return c.JSON(http.StatusOK, resp)
 }
