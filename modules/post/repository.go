@@ -16,4 +16,8 @@ type Repository interface {
 	GetByID(ctx context.Context, id uuid.UUID) (*models.Post, error)
 	GetIndex(ctx context.Context, req request.PageRequest, filter dto.ReqPostIndexFilter) ([]models.Post, int, error)
 	GetAll(ctx context.Context, filter dto.ReqPostIndexFilter) ([]models.Post, error)
+
+	// URL Shortener
+	CreateShortener(ctx context.Context, data dto.ToDBPostShortener) (*models.PostShortUrl, error)
+	GetShortedURLByCode(ctx context.Context, code string) (*models.PostShortUrl, error)
 }
