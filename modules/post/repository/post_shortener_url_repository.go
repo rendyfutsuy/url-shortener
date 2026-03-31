@@ -7,23 +7,23 @@ import (
 	"github.com/rendyfutsuy/base-go/models"
 	"github.com/rendyfutsuy/base-go/modules/post/dto"
 	"github.com/rendyfutsuy/base-go/utils"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func (r *postRepository) CreateShortener(ctx context.Context, data dto.ToDBPostShortener) (*models.PostShortUrl, error) {
 
 	code := utils.GenerateRandomString(6)
-	// hashed short url code
-	hashedCode, err := bcrypt.GenerateFromPassword([]byte(code), 1)
-	if err != nil {
-		utils.Logger.Error(err.Error())
-		return nil, err
-	}
+	// // hashed short url code
+	// hashedCode, err := bcrypt.GenerateFromPassword([]byte(code), 1)
+	// if err != nil {
+	// 	utils.Logger.Error(err.Error())
+	// 	return nil, err
+	// }
 
 	now := time.Now().UTC()
 	c := &models.PostShortUrl{
-		FullUrl:   data.FullUrl,
-		Code:      string(hashedCode),
+		FullUrl: data.FullUrl,
+		// Code:      string(hashedCode),
+		Code:      code,
 		CreatedAt: now,
 		UpdatedAt: now,
 	}

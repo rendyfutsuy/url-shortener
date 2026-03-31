@@ -72,3 +72,44 @@ func StorageHealth(c echo.Context) error {
 		"storage": "healthy",
 	})
 }
+
+func ShortUrl(c echo.Context) error {
+	// Get the path to the template file
+	// Try to find the template file relative to the executable or current working directory
+	var templatePath string
+
+	// First, try relative path from current working directory
+	templatePath = filepath.Join("modules", "homepage", "delivery", "http", "templates", "short-url.html")
+	if _, err := os.Stat(templatePath); os.IsNotExist(err) {
+		// If not found, try relative to the source file location
+		// This works during development when running from project root
+		templatePath = filepath.Join(".", "modules", "homepage", "delivery", "http", "templates", "short-url.html")
+		if _, err := os.Stat(templatePath); os.IsNotExist(err) {
+			return c.HTML(http.StatusInternalServerError, "<h1>Error: Template file not found</h1>")
+		}
+	}
+
+	// Parse template
+	tmpl, err := template.ParseFiles(templatePath)
+	if err != nil {
+		return c.HTML(http.StatusInternalServerError, "<h1>Error loading template</h1>")
+	}
+
+	// Prepare data
+	appEnv := utils.ConfigVars.String("app_env")
+	showSwaggerLink := appEnv == "development"
+
+	data := HomepageData{
+		Version:         constants.Version,
+		LastUpdated:     "2025/12/24 13:33 WIB",
+		ShowSwaggerLink: showSwaggerLink,
+	}
+
+	// Execute template
+	err = tmpl.Execute(c.Response().Writer, data)
+	if err != nil {
+		return c.HTML(http.StatusInternalServerError, "<h1>Error rendering template</h1>")
+	}
+
+	return nil
+}

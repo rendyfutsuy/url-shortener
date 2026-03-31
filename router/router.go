@@ -107,6 +107,8 @@ func InitializedRouter(gormDB *gorm.DB, redisClient *redis.Client, qsvc queue.Qu
 	router.Use(throttleMiddleware.Throttle())
 
 	router.GET("/", _homepageController.DefaultHomepage)
+	router.GET("/shorten", _homepageController.ShortUrl)
+
 	router.GET("/health/storage", _homepageController.StorageHealth)
 
 	// Swagger documentation - hanya tersedia di development environment
