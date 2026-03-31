@@ -20,6 +20,22 @@ type MockPostRepository struct {
 	mock.Mock
 }
 
+func (m *MockPostRepository) CreateShortener(ctx context.Context, data postDto.ToDBPostShortener) (*models.PostShortUrl, error) {
+	args := m.Called(ctx, data)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*models.PostShortUrl), args.Error(1)
+}
+
+func (m *MockPostRepository) GetShortedURLByCode(ctx context.Context, code string) (*models.PostShortUrl, error) {
+	args := m.Called(ctx, code)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*models.PostShortUrl), args.Error(1)
+}
+
 func (m *MockPostRepository) Create(ctx context.Context, createdBy uuid.UUID, data postDto.ToDBPost) (*models.Post, error) {
 	args := m.Called(ctx, createdBy, data)
 	if args.Get(0) == nil {
