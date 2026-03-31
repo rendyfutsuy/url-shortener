@@ -13,9 +13,13 @@ type GetUrlShortener struct {
 	ShortenerUrl string `json:"shortener_url"`
 }
 
+type ToDBPostShortener struct {
+	FullUrl string `json:"full_url"`
+}
+
 func ToUrlShortener(m *models.PostShortUrl) GetUrlShortener {
 	return GetUrlShortener{
-		// FullUrl: m.FullUrl,
-		// ShortenerUrl: m.GetShortedURL(),
+		FullUrl:      m.FullUrl,
+		ShortenerUrl: m.GetShortedURL(),
 	}
 }

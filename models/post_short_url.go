@@ -8,7 +8,6 @@ import (
 
 type PostShortUrl struct {
 	ID        uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v7()" json:"id"`
-	CreatedBy uuid.UUID `gorm:"column:created_by;type:uuid;not null" json:"created_by"`
 	FullUrl   string    `gorm:"column:full_url;type:text;not null" json:"full_url"`
 	Code      string    `gorm:"column:code;type:varchar(255);not null" json:"code"`
 	CreatedAt time.Time `gorm:"column:created_at;not null" json:"created_at"`

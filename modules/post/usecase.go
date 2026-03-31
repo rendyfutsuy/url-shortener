@@ -16,4 +16,8 @@ type Usecase interface {
 	GetParameterReferences(ctx context.Context, id string) (*dto.ReferenceObject, *dto.ReferenceObject, []dto.ReferenceObject, error)
 	GetIndex(ctx context.Context, req request.PageRequest, filter dto.ReqPostIndexFilter) ([]models.Post, int, error)
 	GetAll(ctx context.Context, filter dto.ReqPostIndexFilter) ([]models.Post, error)
+
+	// URL Short
+	CreatePostUrlShortener(ctx context.Context, req *dto.ReqUrlShortener) (*models.PostShortUrl, error)
+	GetShortedURLByCode(ctx context.Context, code string) (*models.PostShortUrl, error)
 }

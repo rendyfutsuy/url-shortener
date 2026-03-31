@@ -256,7 +256,7 @@ func (h *PostHandler) GetByID(c echo.Context) error {
 }
 
 func (h *PostHandler) UrlShortener(c echo.Context) error {
-	// ctx := c.Request().Context()
+	ctx := c.Request().Context()
 
 	req := new(dto.ReqUrlShortener)
 	if err := c.Bind(req); err != nil {
@@ -267,7 +267,13 @@ func (h *PostHandler) UrlShortener(c echo.Context) error {
 	}
 
 	// adjust url
-	shortenendURL := dto.ToUrlShortener(nil)
+	res, err := h.Usecase.CreatePostUrlShortener(ctx, req)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, response.SetErrorResponse(http.StatusBadRequest, err.Error()))
+	}
+
+	// mapping response
+	shortenendURL := dto.ToUrlShortener(res)
 
 	resp := response.NonPaginationResponse{}
 	resp, _ = resp.SetResponse(shortenendURL)
@@ -275,13 +281,21 @@ func (h *PostHandler) UrlShortener(c echo.Context) error {
 }
 
 func (h *PostHandler) GetUrlShortener(c echo.Context) error {
-	// ctx := c.Request().Context()
-	// code := c.Param("code")
+	ctx := c.Request().Context()
+	code := c.Param("code")
 
 	// fetch full url
 
+	res, err := h.Usecase.GetShortedURLByCode(ctx, code)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, response.SetErrorResponse(http.StatusBadRequest, err.Error()))
+	}
+	if res == nil {
+		return c.JSON(http.StatusBadRequest, response.SetErrorResponse(http.StatusBadRequest, "Url not found"))
+	}
+
 	// adjust url
-	shortenendURL := dto.ToUrlShortener(nil)
+	shortenendURL := dto.ToUrlShortener(res)
 	resp := response.NonPaginationResponse{}
 	resp, _ = resp.SetResponse(shortenendURL)
 	return c.JSON(http.StatusOK, resp)
